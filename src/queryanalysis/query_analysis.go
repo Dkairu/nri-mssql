@@ -54,7 +54,7 @@ func PopulateQueryPerformanceMetrics(integration *integration.Integration, argum
 			log.Error("Failed to execute query: %s", err)
 			continue
 		}
-		err = utils.IngestQueryMetricsInBatches(queryResults, queryDetailsDto, integration, sqlConnection)
+		err = utils.IngestQueryMetricsInBatches(queryResults, queryDetailsDto, integration, sqlConnection, arguments)
 		if err != nil {
 			log.Error("Failed to ingest metrics: %s", err)
 			continue

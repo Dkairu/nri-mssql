@@ -24,6 +24,7 @@ type ArgumentList struct {
 	ClientSecret                                string `default:"" help:"Azure AD Service Principal client secret"`
 	Instance                                    string `default:"" help:"The Microsoft SQL Server instance to connect to"`
 	Hostname                                    string `default:"127.0.0.1" help:"The Microsoft SQL Server connection host name"`
+	DisplayName								    string `default:"" help:"The display name for the Microsoft SQL Server instance to override the queried instance name"`	
 	Port                                        string `default:"" help:"The Microsoft SQL Server port to connect to. Only needed when instance not specified"`
 	EnableSSL                                   bool   `default:"false" help:"If true will use SSL encryption, false will not use encryption"`
 	TrustServerCertificate                      bool   `default:"false" help:"If true server certificate is not verified for SSL. If false certificate will be verified against supplied certificate"`

@@ -67,7 +67,7 @@ func main() {
 	}
 
 	// Create the entity for the instance
-	instanceEntity, err := instance.CreateInstanceEntity(i, con)
+	instanceEntity, err := instance.CreateInstanceEntity(i, con, &args)
 	if err != nil {
 		log.Error("Unable to create entity for instance: %s", err.Error())
 		os.Exit(1)

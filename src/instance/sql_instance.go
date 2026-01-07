@@ -7,6 +7,7 @@ import (
 
 	"github.com/newrelic/infra-integrations-sdk/v3/integration"
 	"github.com/newrelic/nri-mssql/src/connection"
+	"github.com/newrelic/nri-mssql/src/args" 
 )
 
 // instanceNameQuery gets the instance name
@@ -18,7 +19,12 @@ type NameRow struct {
 }
 
 // CreateInstanceEntity runs a query to get the instance
-func CreateInstanceEntity(i *integration.Integration, con *connection.SQLConnection) (*integration.Entity, error) {
+func CreateInstanceEntity(i *integration.Integration, con *connection.SQLConnection, args *args.ArgumentList) (*integration.Entity, error) {
+	if args.DisplayName != "" {
+        instanceNameIDAttr := integration.NewIDAttribute("instance", args.DisplayName)
+        return i.EntityReportedVia(con.Host, args.DisplayName, "ms-instance", instanceNameIDAttr)
+    }
+	
 	instanceRows := make([]*NameRow, 0)
 	if err := con.Query(&instanceRows, instanceNameQuery); err != nil {
 		return nil, err

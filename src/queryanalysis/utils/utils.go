@@ -407,7 +407,7 @@ func GenerateAndIngestExecutionPlan(arguments args.ArgumentList, integration *in
 	}
 
 	// Ingest the execution plan
-	if err := IngestQueryMetricsInBatches(results, queryDetailsDto, integration, sqlConnection); err != nil {
+	if err := IngestQueryMetricsInBatches(results, queryDetailsDto, integration, sqlConnection, arguments); err != nil {
 		log.Error("Failed to ingest execution plan: %s", err)
 	}
 }
@@ -416,6 +416,7 @@ func IngestQueryMetricsInBatches(results []interface{},
 	queryDetailsDto models.QueryDetailsDto,
 	integration *integration.Integration,
 	sqlConnection *connection.SQLConnection,
+	arguments args.ArgumentList,
 ) error {
 	for start := 0; start < len(results); start += config.BatchSize {
 		end := start + config.BatchSize
@@ -425,7 +426,7 @@ func IngestQueryMetricsInBatches(results []interface{},
 
 		batchResult := results[start:end]
 
-		if err := IngestQueryMetrics(batchResult, queryDetailsDto, integration, sqlConnection); err != nil {
+		if err := IngestQueryMetrics(batchResult, queryDetailsDto, integration, sqlConnection, arguments); err != nil {
 			return fmt.Errorf("error ingesting batch from %d to %d: %w", start, end, err)
 		}
 	}
@@ -461,8 +462,8 @@ func handleGaugeMetric(key, strValue string, metricSet *metric.Set) {
 }
 
 // IngestQueryMetrics processes and ingests query metrics into the New Relic entity
-func IngestQueryMetrics(results []interface{}, queryDetailsDto models.QueryDetailsDto, integration *integration.Integration, sqlConnection *connection.SQLConnection) error {
-	instanceEntity, err := instance.CreateInstanceEntity(integration, sqlConnection)
+func IngestQueryMetrics(results []interface{}, queryDetailsDto models.QueryDetailsDto, integration *integration.Integration, sqlConnection *connection.SQLConnection, arguments args.ArgumentList) error {
+	instanceEntity, err := instance.CreateInstanceEntity(integration, sqlConnection, &arguments)
 	if err != nil {
 		log.Error("%w: %v", ErrCreatingInstanceEntity, err)
 	}
